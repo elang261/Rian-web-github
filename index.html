@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Pribadi Febrian</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#166534',
+                        'primary-light': '#22c55e',
+                        'primary-dark': '#14532d',
+                        secondary: '#1e40af',
+                        accent: '#f59e0b',
+                        'accent-dark': '#d97706',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; overflow-x: hidden; }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+        @keyframes rotate-slow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        @keyframes particle {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+
+        .animate-on-scroll { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .animate-on-scroll.visible { opacity: 1; transform: translateY(0); }
+        .animate-on-scroll.visible.delay-1 { transition-delay: 0.1s; }
+        .animate-on-scroll.visible.delay-2 { transition-delay: 0.2s; }
+        .animate-on-scroll.visible.delay-3 { transition-delay: 0.3s; }
+        .animate-on-scroll.visible.delay-4 { transition-delay: 0.4s; }
+        .animate-on-scroll.visible.delay-5 { transition-delay: 0.5s; }
+        .animate-on-scroll.visible.delay-6 { transition-delay: 0.6s; }
+
+        .float-anim { animation: float 3s ease-in-out infinite; }
+        .float-anim-delay { animation: float 3s ease-in-out infinite 1.5s; }
+        .rotate-slow { animation: rotate-slow 20s linear infinite; }
+        .shimmer-text {
+            background: linear-gradient(90deg, #fff 0%, #22c55e 50%, #fff 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 3s linear infinite;
+        }
+        .gradient-move {
+            background: linear-gradient(-45deg, #166534, #1e40af, #22c55e, #14532d);
+            background-size: 400% 400%;
+            animation: gradientMove 8s ease infinite;
+        }
+
+        #loginOverlay {
+            position: fixed; inset: 0; z-index: 9999;
+            background: linear-gradient(135deg, rgba(20,83,45,0.95), rgba(30,64,175,0.9));
+            display: flex; align-items: center; justify-content: center;
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        #loginOverlay.hidden-overlay { opacity: 0; pointer-events: none; transform: scale(1.1); }
+        .login-particles { position: absolute; inset: 0; overflow: hidden; }
+        .login-particle {
+            position: absolute; bottom: -10px; width: 10px; height: 10px;
+            background: rgba(255,255,255,0.15); border-radius: 50%;
+            animation: particle linear infinite;
+        }
+        .login-card { animation: scaleIn 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .logo-glow {
+            filter: drop-shadow(0 0 20px rgba(245, 158, 11, 0.5));
+            transition: all 0.3s;
+        }
+        .logo-glow:hover { filter: drop-shadow(0 0 40px rgba(245, 158, 11, 0.8)); transform: scale(1.05); }
+
+        .navbar {
+            backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+            background: rgba(255,255,255,0.85);
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .navbar.scrolled { background: rgba(255,255,255,0.95); box-shadow: 0 4px 30px rgba(0,0,0,0.08); }
+        .nav-link { position: relative; transition: color 0.3s; }
+        .nav-link::after {
+            content: ''; position: absolute; bottom: -4px; left: 0;
+            width: 0; height: 2px; background: #22c55e;
+            transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .nav-link:hover::after, .nav-link.active::after { width: 100%; }
+        .nav-link:hover { color: #166534; }
+
+        .hero-bg {
+            background-image: url('https://z-cdn-media.chatglm.cn/files/338a0835-8196-4dd6-839c-7983bdd992e9.jpeg?auth_key=1877861924-0caf9d28c2384c648b936d50d3e98a02-0-39f82f1a19afe9e8d98363cfc18ffae2');
+            background-size: cover; background-position: center;
+            background-attachment: fixed;
+        }
+        .hero-overlay {
+            background: linear-gradient(135deg, rgba(20,83,45,0.85) 0%, rgba(30,64,175,0.7) 50%, rgba(20,83,45,0.8) 100%);
+        }
+
+        .program-card {
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 1px solid rgba(0,0,0,0.06);
+        }
+        .program-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 25px 60px -12px rgba(22, 101, 52, 0.2);
+            border-color: rgba(34, 197, 94, 0.3);
+        }
+        .program-card .icon-wrap { transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+        .program-card:hover .icon-wrap {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 10px 30px rgba(34, 197, 94, 0.3);
+        }
+        .gallery-item {
+            overflow: hidden; border-radius: 16px;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .gallery-item:hover { transform: translateY(-8px); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.2); }
+        .gallery-item img { transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1); }
+        .gallery-item:hover img { transform: scale(1.1); }
+
+        .stat-card { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .stat-card:hover { transform: translateY(-5px) scale(1.02); }
+        .scroll-indicator { animation: float 2s ease-in-out infinite; }
+        .wave-divider { position: relative; overflow: hidden; }
+        .wave-divider::after {
+            content: ''; position: absolute; bottom: -2px; left: 0;
+            width: 100%; height: 80px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 100'%3E%3Cpath fill='%23ffffff' d='M0,40 C360,100 720,0 1080,60 C1260,80 1380,50 1440,40 L1440,100 L0,100 Z'/%3E%3C/svg%3E") no-repeat bottom;
+            background-size: cover;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #166534, #22c55e);
+            color: white; border: none; border-radius: 12px;
+            padding: 14px 32px; font-weight: 600; font-size: 14px;
+            letter-spacing: 0.05em; text-transform: uppercase;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative; overflow: hidden;
+        }
+        .btn-primary::before {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(135deg, #22c55e, #166534);
+            opacity: 0; transition: opacity 0.4s;
+        }
+        .btn-primary:hover::before { opacity: 1; }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 15px 35px rgba(22,101,52,0.3); }
+        .btn-primary span { position: relative; z-index: 1; }
+
+        .btn-outline {
+            border: 2px solid rgba(255,255,255,0.4); color: white;
+            border-radius: 12px; padding: 12px 30px;
+            font-weight: 600; font-size: 14px; letter-spacing: 0.05em;
+            text-transform: uppercase; background: transparent;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .btn-outline:hover { background: white; color: #166534; border-color: white; transform: translateY(-3px); }
+
+        .mobile-menu { transform: translateX(100%); transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+        .mobile-menu.open { transform: translateX(0); }
+
+        .toast { animation: fadeInUp 0.5s ease-out, fadeIn 0.5s ease-out; }
+        .toast.hiding { animation: fadeIn 0.3s ease-out reverse forwards; }
+
+        .lightbox { opacity: 0; pointer-events: none; transition: opacity 0.4s; }
+        .lightbox.active { opacity: 1; pointer-events: all; }
+        .lightbox img { transform: scale(0.8); transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+        .lightbox.active img { transform: scale(1); }
+
+        .input-field {
+            border: 2px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px; padding: 14px 16px;
+            color: white; font-size: 15px; width: 100%;
+            transition: all 0.3s; outline: none;
+        }
+        .input-field::placeholder { color: rgba(255,255,255,0.5); }
+        .input-field:focus { border-color: #22c55e; background: rgba(255,255,255,0.15); box-shadow: 0 0 20px rgba(34,197,94,0.2); }
+
+        .back-to-top { opacity: 0; transform: translateY(20px); transition: all 0.4s; pointer-events: none; }
+        .back-to-top.visible { opacity: 1; transform: translateY(0); pointer-events: all; }
+        .counter { display: inline-block; }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f5f5f5; }
+        ::-webkit-scrollbar-thumb { background: #166534; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #14532d; }
+    </style>
+</head>
+<body class="bg-white text-gray-800">
+
+    <!-- LOGIN OVERLAY -->
+    <div id="loginOverlay">
+        <div class="login-particles" id="loginParticles"></div>
+        <div class="relative z-10 w-full max-w-md mx-4 login-card">
+            <div class="text-center mb-8">
+                <img src="https://z-cdn-media.chatglm.cn/files/76f9f1c0-9ce7-4678-b517-c05365e5e3b0.jpeg?auth_key=1877861924-84ea8cc8c6224f42871147ed231c2e55-0-4a9229e5abbda91aec34c9871133fbb8"
+                     alt="Logo SMKN 14" class="w-28 h-28 mx-auto mb-4 logo-glow rounded-full object-contain bg-white p-2" style="animation: fadeInDown 0.8s ease-out;">
+                <h1 class="text-white text-2xl font-bold tracking-wide" style="animation: fadeInUp 0.8s ease-out 0.2s both;">SMKN 14 SAMARINDA</h1>
+                <p class="text-green-200 text-sm mt-1 tracking-widest uppercase" style="animation: fadeInUp 0.8s ease-out 0.4s both;">Sekolah Menengah Kejuruan Negeri</p>
+            </div>
+            <div class="bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/20" style="animation: fadeInUp 0.8s ease-out 0.5s both;">
+                <h2 class="text-white text-xl font-semibold text-center mb-2">Selamat Datang</h2>
+                <p class="text-green-200/70 text-center text-sm mb-6">Masuk ke portal akademik</p>
+                <form id="loginForm" onsubmit="handleLogin(event)">
+                    <div class="mb-4">
+                        <label class="text-green-200 text-xs font-semibold uppercase tracking-widest mb-2 block">NIS / Username</label>
+                        <div class="relative">
+                            <span class="iconify absolute left-4 top-1/2 -translate-y-1/2 text-green-300/60" data-icon="lucide:user" data-width="18"></span>
+                            <input type="text" id="loginUser" class="input-field pl-11" placeholder="Masukkan NIS atau Username" required>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="text-green-200 text-xs font-semibold uppercase tracking-widest mb-2 block">Password</label>
+                        <div class="relative">
+                            <span class="iconify absolute left-4 top-1/2 -translate-y-1/2 text-green-300/60" data-icon="lucide:lock" data-width="18"></span>
+                            <input type="password" id="loginPass" class="input-field pl-11 pr-11" placeholder="Masukkan Password" required>
+                            <button type="button" onclick="togglePassword()" class="absolute right-4 top-1/2 -translate-y-1/2 text-green-300/60 hover:text-white transition-colors">
+                                <span class="iconify" data-icon="lucide:eye" data-width="18" id="eyeIcon"></span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between mb-6">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" class="w-4 h-4 rounded accent-green-500">
+                            <span class="text-green-200/80 text-sm">Ingat saya</span>
+                        </label>
+                        <a href="#" class="text-green-300 text-sm hover:text-white transition-colors hover:underline">Lupa password?</a>
+                    </div>
+                    <button type="submit" class="w-full btn-primary py-4 text-base rounded-xl"><span>Masuk</span></button>
+                </form>
+                <div class="mt-4 text-center">
+                    <button onclick="skipLogin()" class="text-green-200/60 text-sm hover:text-white transition-colors">
+                        <span class="iconify inline-block mr-1" data-icon="lucide:arrow-right" data-width="14"></span>Masuk sebagai Tamu
+                    </button>
+                </div>
+            </div>
+            <p class="text-center text-green-200/40 text-xs mt-6" style="animation: fadeIn 1s ease-out 1s both;">© 2025 SMKN 14 Samarinda. All rights reserved.</p>
+        </div>
+    </div>
+
+    <!-- MAIN WEBSITE -->
+    <div id="mainSite" style="opacity: 0; transition: opacity 0.8s 0.3s;">
+
+        <!-- NAVBAR -->
+        <nav class="navbar fixed top-0 left-0 right-0 z-50 h-16" id="navbar">
+            <div class="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
+                <a href="#home" class="flex items-center gap-3 group">
+                    <img src="https://z-cdn-media.chatglm.cn/files/76f9f1c0-9ce7-4678-b517-c05365e5e3b0.jpeg?auth_key=1877861924-84ea8cc8c6224f42871147ed231c2e55-0-4a9229e5abbda91aec34c9871133fbb8"
+                         alt="Logo" class="w-10 h-10 rounded-full object-contain bg-white p-0.5 shadow-md group-hover:shadow-lg transition-shadow">
+                    <div class="hidden sm:block">
+                        <span class="text-primary font-bold text-sm leading-tight block">SMKN 14</span>
+                        <span class="text-gray-400 text-[10px] tracking-widest uppercase">Samarinda</span>
+                    </div>
+                </a>
+                <div class="hidden lg:flex items-center gap-8">
+                    <a href="#home" class="nav-link text-sm font-medium text-gray-600 active">Beranda</a>
+                    <a href="#tentang" class="nav-link text-sm font-medium text-gray-600">Tentang</a>
+                    <a href="#program" class="nav-link text-sm font-medium text-gray-600">Program Keahlian</a>
+                    <a href="#galeri" class="nav-link text-sm font-medium text-gray-600">Galeri</a>
+                    <a href="#kontak" class="nav-link text-sm font-medium text-gray-600">Kontak</a>
+                    <button onclick="showLogin()" class="btn-primary text-xs py-2.5 px-5 rounded-lg"><span>Login</span></button>
+                </div>
+                <button onclick="toggleMobile()" class="lg:hidden text-gray-700 p-2">
+                    <span class="iconify" data-icon="lucide:menu" data-width="24" id="menuIcon"></span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Mobile Menu -->
+        <div class="mobile-menu fixed inset-0 z-40 bg-white lg:hidden" id="mobileMenu">
+            <div class="pt-20 px-8 flex flex-col gap-6">
+                <a href="#home" onclick="closeMobile()" class="text-2xl font-serif text-gray-800 hover:text-primary transition-colors">Beranda</a>
+                <a href="#tentang" onclick="closeMobile()" class="text-2xl font-serif text-gray-800 hover:text-primary transition-colors">Tentang</a>
+                <a href="#program" onclick="closeMobile()" class="text-2xl font-serif text-gray-800 hover:text-primary transition-colors">Program Keahlian</a>
+                <a href="#galeri" onclick="closeMobile()" class="text-2xl font-serif text-gray-800 hover:text-primary transition-colors">Galeri</a>
+                <a href="#kontak" onclick="closeMobile()" class="text-2xl font-serif text-gray-800 hover:text-primary transition-colors">Kontak</a>
+                <hr class="my-2">
+                <button onclick="showLogin(); closeMobile();" class="btn-primary w-full text-center"><span>Login Portal</span></button>
+            </div>
+        </div>
+
+        <!-- HERO -->
+        <section id="home" class="hero-bg min-h-screen relative wave-divider">
+            <div class="hero-overlay absolute inset-0"></div>
+            <div class="absolute top-20 left-10 w-32 h-32 border border-white/10 rounded-full rotate-slow hidden md:block"></div>
+            <div class="absolute bottom-40 right-20 w-48 h-48 border border-white/5 rounded-full rotate-slow hidden md:block" style="animation-direction: reverse; animation-duration: 30s;"></div>
+            <div class="absolute top-1/3 right-1/4 w-4 h-4 bg-green-400/30 rounded-full float-anim hidden md:block"></div>
+            <div class="absolute bottom-1/3 left-1/4 w-3 h-3 bg-blue-400/30 rounded-full float-anim-delay hidden md:block"></div>
+            <div class="relative z-10 max-w-7xl mx-auto px-6 pt-32 pb-40 md:pt-40 md:pb-48 flex flex-col items-center text-center">
+                <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-5 py-2 mb-8" style="animation: fadeInDown 0.8s ease-out 0.3s both;">
+                    <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                    <span class="text-white/80 text-xs font-semibold tracking-widest uppercase">Pendaftaran Dibuka 2025/2026</span>
+                </div>
+                <h1 class="font-serif text-white text-4xl md:text-6xl lg:text-7xl leading-[1.1] tracking-tight max-w-4xl" style="animation: fadeInUp 0.8s ease-out 0.5s both;">
+                    SMKN 14<br><span class="shimmer-text">Samarinda</span>
+                </h1>
+                <p class="text-white/70 text-base md:text-lg font-light leading-relaxed max-w-2xl mt-6" style="animation: fadeInUp 0.8s ease-out 0.7s both;">
+                    Mencetak generasi unggul, terampil, dan berakhlak mulia melalui pendidikan kejuruan berkualitas di Kalimantan Timur.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 mt-10" style="animation: fadeInUp 0.8s ease-out 0.9s both;">
+                    <a href="#program" class="btn-primary text-sm"><span class="flex items-center gap-2">Lihat Program Keahlian <span class="iconify" data-icon="lucide:arrow-right" data-width="16"></span></span></a>
+                    <a href="#tentang" class="btn-outline text-sm">Tentang Kami</a>
+                </div>
+                <div class="scroll-indicator absolute bottom-24 left-1/2 -translate-x-1/2" style="animation: fadeIn 1s ease-out 1.5s both;">
+                    <div class="flex flex-col items-center gap-2">
+                        <span class="text-white/40 text-[10px] tracking-widest uppercase">Scroll</span>
+                        <div class="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center pt-2">
+                            <div class="w-1 h-2 bg-white/60 rounded-full animate-bounce"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- STATS -->
+        <section class="relative -mt-16 z-20 px-6 mb-16">
+            <div class="max-w-5xl mx-auto bg-white rounded-2xl shadow-xl p-6 md:p-8 grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div class="stat-card text-center animate-on-scroll">
+                    <div class="w-12 h-12 mx-auto mb-3 bg-green-50 rounded-xl flex items-center justify-center"><span class="iconify text-primary" data-icon="lucide:users" data-width="24"></span></div>
+                    <div class="text-3xl font-bold text-primary counter" data-target="1200">0</div>
+                    <div class="text-gray-400 text-xs tracking-widest uppercase mt-1">Siswa Aktif</div>
+                </div>
+                <div class="stat-card text-center animate-on-scroll delay-1">
+                    <div class="w-12 h-12 mx-auto mb-3 bg-blue-50 rounded-xl flex items-center justify-center"><span class="iconify text-secondary" data-icon="lucide:graduation-cap" data-width="24"></span></div>
+                    <div class="text-3xl font-bold text-secondary counter" data-target="60">0</div>
+                    <div class="text-gray-400 text-xs tracking-widest uppercase mt-1">Guru & Staff</div>
+                </div>
+                <div class="stat-card text-center animate-on-scroll delay-2">
+                    <div class="w-12 h-12 mx-auto mb-3 bg-amber-50 rounded-xl flex items-center justify-center"><span class="iconify text-accent" data-icon="lucide:award" data-width="24"></span></div>
+                    <div class="text-3xl font-bold text-accent counter" data-target="6">0</div>
+                    <div class="text-gray-400 text-xs tracking-widest uppercase mt-1">Program Keahlian</div>
+                </div>
+                <div class="stat-card text-center animate-on-scroll delay-3">
+                    <div class="w-12 h-12 mx-auto mb-3 bg-green-50 rounded-xl flex items-center justify-center"><span class="iconify text-primary-light" data-icon="lucide:trophy" data-width="24"></span></div>
+                    <div class="text-3xl font-bold text-primary-light counter" data-target="100">0</div>
+                    <div class="text-gray-400 text-xs tracking-widest uppercase mt-1">Prestasi</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TENTANG -->
+        <section id="tentang" class="py-20 md:py-28 px-6">
+            <div class="max-w-7xl mx-auto">
+                <div class="grid md:grid-cols-2 gap-12 md:gap-16 items-center">
+                    <div class="animate-on-scroll relative">
+                        <div class="rounded-2xl overflow-hidden shadow-2xl">
+                            <img src="https://z-cdn-media.chatglm.cn/files/338a0835-8196-4dd6-839c-7983bdd992e9.jpeg?auth_key=1877861924-0caf9d28c2384c648b936d50d3e98a02-0-39f82f1a19afe9e8d98363cfc18ffae2" alt="Gedung SMKN 14" class="w-full h-80 md:h-[28rem] object-cover">
+                        </div>
+                        <div class="absolute -bottom-6 -right-4 md:-right-8 bg-white rounded-2xl shadow-xl p-5 float-anim">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 gradient-move rounded-xl flex items-center justify-center"><span class="iconify text-white" data-icon="lucide:shield-check" data-width="24"></span></div>
+                                <div><div class="text-lg font-bold text-primary">Terakreditasi</div><div class="text-gray-400 text-xs">B (Baik)</div></div>
+                            </div>
+                        </div>
+                        <div class="absolute -top-4 -left-4 w-24 h-24 border-2 border-green-200 rounded-2xl -z-10"></div>
+                    </div>
+                    <div>
+                        <div class="animate-on-scroll">
+                            <span class="text-primary text-xs font-semibold tracking-[0.2em] uppercase">Tentang Kami</span>
+                            <h2 class="font-serif text-3xl md:text-4xl tracking-tight mt-3 mb-6 text-gray-900">Membangun Masa Depan<br><span class="text-primary">Melalui Kejuruan</span></h2>
+                        </div>
+                        <p class="text-gray-500 font-light leading-relaxed mb-6 animate-on-scroll delay-1">
+                            SMK Negeri 14 Samarinda merupakan sekolah menengah kejuruan yang berlokasi di Jl. H.A.M.M Rifadin SMKN 14 Samarinda.
+                            Kami berkomitmen untuk menyediakan pendidikan kejuruan berkualitas tinggi yang mempersiapkan siswa untuk dunia kerja dan kesempatan berwirausaha.
+                        </p>
+                        <p class="text-gray-500 font-light leading-relaxed mb-8 animate-on-scroll delay-2">
+                            Dengan 6 program keahlian unggulan dan tenaga pengajar profesional, kami terus berinovasi dalam metode pembelajaran
+                            untuk menghasilkan lulusan yang kompeten dan siap bersaing di era digital.
+                        </p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="flex items-start gap-3 animate-on-scroll delay-3">
+                                <div class="w-8 h-8 bg-green-50 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"><span class="iconify text-primary" data-icon="lucide:check-circle" data-width="16"></span></div>
+                                <div><div class="text-sm font-semibold text-gray-800">Kurikulum Merdeka</div><div class="text-xs text-gray-400 mt-0.5">Pembelajaran terkini</div></div>
+                            </div>
+                            <div class="flex items-start gap-3 animate-on-scroll delay-4">
+                                <div class="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"><span class="iconify text-secondary" data-icon="lucide:check-circle" data-width="16"></span></div>
+                                <div><div class="text-sm font-semibold text-gray-800">Fasilitas Modern</div><div class="text-xs text-gray-400 mt-0.5">Lab & workshop lengkap</div></div>
+                            </div>
+                            <div class="flex items-start gap-3 animate-on-scroll delay-5">
+                                <div class="w-8 h-8 bg-amber-50 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"><span class="iconify text-accent" data-icon="lucide:check-circle" data-width="16"></span></div>
+                                <div><div class="text-sm font-semibold text-gray-800">Kerjasama Industri</div><div class="text-xs text-gray-400 mt-0.5">MOU dengan perusahaan</div></div>
+                            </div>
+                            <div class="flex items-start gap-3 animate-on-scroll delay-6">
+                                <div class="w-8 h-8 bg-green-50 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"><span class="iconify text-primary-light" data-icon="lucide:check-circle" data-width="16"></span></div>
+                                <div><div class="text-sm font-semibold text-gray-800">Ekstrakurikuler</div><div class="text-xs text-gray-400 mt-0.5">20+ kegiatan tersedia</div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROGRAM KEAHLIAN -->
+        <section id="program" class="py-20 md:py-28 px-6 bg-gray-50/80">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center max-w-2xl mx-auto mb-16">
+                    <span class="text-primary text-xs font-semibold tracking-[0.2em] uppercase animate-on-scroll">Program Keahlian</span>
+                    <h2 class="font-serif text-3xl md:text-4xl tracking-tight mt-3 mb-5 text-gray-900 animate-on-scroll delay-1">Pilihan Jurusan <span class="text-primary">Unggulan</span></h2>
+                    <p class="text-gray-500 font-light leading-relaxed animate-on-scroll delay-2">Enam program keahlian yang dirancang untuk memenuhi kebutuhan industri dan dunia kerja masa kini.</p>
+                </div>
+                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="program-card bg-white rounded-2xl p-8 animate-on-scroll">
+                        <div class="icon-wrap w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mb-6"><span class="iconify text-blue-600" data-icon="lucide:monitor-smartphone" data-width="32"></span></div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">TJKT</h3>
+                        <p class="text-xs text-blue-600 font-semibold tracking-widest uppercase mb-3">Teknik Jaringan Komputer & Telekomunikasi</p>
+                        <p class="text-gray-500 text-sm font-light leading-relaxed mb-5">Mempelajari instalasi, konfigurasi jaringan komputer, telekomunikasi, serta keamanan siber.</p>
+                        <div class="flex flex-wrap gap-2"><span class="text-[10px] bg-blue-50 text-blue-700 px-3 py-1 rounded-full font-medium">Jaringan</span><span class="text-[10px] bg-blue-50 text-blue-700 px-3 py-1 rounded-full font-medium">Cyber Security</span><span class="text-[10px] bg-blue-50 text-blue-700 px-3 py-1 rounded-full font-medium">Fiber Optic</span></div>
+                    </div>
+                    <div class="program-card bg-white rounded-2xl p-8 animate-on-scroll delay-1">
+                        <div class="icon-wrap w-16 h-16 bg-purple-50 rounded-2xl flex items-center justify-center mb-6"><span class="iconify text-purple-600" data-icon="lucide:palette" data-width="32"></span></div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">DKV</h3>
+                        <p class="text-xs text-purple-600 font-semibold tracking-widest uppercase mb-3">Desain Komunikasi Visual</p>
+                        <p class="text-gray-500 text-sm font-light leading-relaxed mb-5">Mengembangkan kreativitas melalui desain grafis, animasi, fotografi, dan videografi profesional.</p>
+                        <div class="flex flex-wrap gap-2"><span class="text-[10px] bg-purple-50 text-purple-700 px-3 py-1 rounded-full font-medium">Graphic Design</span><span class="text-[10px] bg-purple-50 text-purple-700 px-3 py-1 rounded-full font-medium">Animasi</span><span class="text-[10px] bg-purple-50 text-purple-700 px-3 py-1 rounded-full font-medium">Video</span></div>
+                    </div>
+                    <div class="program-card bg-white rounded-2xl p-8 animate-on-scroll delay-2">
+                        <div class="icon-wrap w-16 h-16 bg-pink-50 rounded-2xl flex items-center justify-center mb-6"><span class="iconify text-pink-600" data-icon="lucide:scissors" data-width="32"></span></div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">Tata Busana</h3>
+                        <p class="text-xs text-pink-600 font-semibold tracking-widest uppercase mb-3">Tata Busana</p>
+                        <p class="text-gray-500 text-sm font-light leading-relaxed mb-5">Menguasai teknik menjahit, pattern making, desain fashion, dan entrepreneurship di bidang garmen.</p>
+                        <div class="flex flex-wrap gap-2"><span class="text-[10px] bg-pink-50 text-pink-700 px-3 py-1 rounded-full font-medium">Fashion Design</span><span class="text-[10px] bg-pink-50 text-pink-700 px-3 py-1 rounded-full font-medium">Sewing</span><span class="text-[10px] bg-pink-50 text-pink-700 px-3 py-1 rounded-full font-medium">Pattern</span></div>
+                    </div>
+                    <div class="program-card bg-white rounded-2xl p-8 animate-on-scroll delay-3">
+                        <div class="icon-wrap w-16 h-16 bg-green-50 rounded-2xl flex items-center justify-center mb-6"><span class="iconify text-green-600" data-icon="lucide:calculator" data-width="32"></span></div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">AKL</h3>
+                        <p class="text-xs text-green-600 font-semibold tracking-widest uppercase mb-3">Akuntansi & Keuangan Lembaga</p>
+                        <p class="text-gray-500 text-sm font-light leading-relaxed mb-5">Menguasai pembukuan, laporan keuangan, perpajakan, dan pengelolaan keuangan lembaga.</p>
+                        <div class="flex flex-wrap gap-2"><span class="text-[10px] bg-green-50 text-green-700 px-3 py-1 rounded-full font-medium">Akuntansi</span><span class="text-[10px] bg-green-50 text-green-700 px-3 py-1 rounded-full font-medium">Perpajakan</span><span class="text-[10px] bg-green-50 text-green-700 px-3 py-1 rounded-full font-medium">MyOB</span></div>
+                    </div>
+                    <div class="program-card bg-white rounded-2xl p-8 animate-on-scroll delay-4">
+                        <div class="icon-wrap w-16 h-16 bg-amber-50 rounded-2xl flex items-center justify-center mb-6"><span class="iconify text-amber-600" data-icon="lucide:briefcase" data-width="32"></span></div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">MPLB</h3>
+                        <p class="text-xs text-amber-600 font-semibold tracking-widest uppercase mb-3">Manajemen Perkantoran & Layanan Bisnis</p>
+                        <p class="text-gray-500 text-sm font-light leading-relaxed mb-5">Mempelajari administrasi perkantoran, korespondensi, pengelolaan surat, dan layanan bisnis modern.</p>
+                        <div class="flex flex-wrap gap-2"><span class="text-[10px] bg-amber-50 text-amber-700 px-3 py-1 rounded-full font-medium">Administrasi</span><span class="text-[10px] bg-amber-50 text-amber-700 px-3 py-1 rounded-full font-medium">Arsip</span><span class="text-[10px] bg-amber-50 text-amber-700 px-3 py-1 rounded-full font-medium">Digital Office</span></div>
+                    </div>
+                    <div class="program-card bg-white rounded-2xl p-8 animate-on-scroll delay-5">
+                        <div class="icon-wrap w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center mb-6"><span class="iconify text-red-600" data-icon="lucide:trending-up" data-width="32"></span></div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">Pemasaran</h3>
+                        <p class="text-xs text-red-600 font-semibold tracking-widest uppercase mb-3">Bisnis Daring & Pemasaran</p>
+                        <p class="text-gray-500 text-sm font-light leading-relaxed mb-5">Menguasai strategi pemasaran digital, e-commerce, branding, dan komunikasi pemasaran efektif.</p>
+                        <div class="flex flex-wrap gap-2"><span class="text-[10px] bg-red-50 text-red-700 px-3 py-1 rounded-full font-medium">Digital Marketing</span><span class="text-[10px] bg-red-50 text-red-700 px-3 py-1 rounded-full font-medium">E-Commerce</span><span class="text-[10px] bg-red-50 text-red-700 px-3 py-1 rounded-full font-medium">Branding</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- GALERI -->
+        <section id="galeri" class="py-20 md:py-28 px-6">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center max-w-2xl mx-auto mb-16">
+                    <span class="text-primary text-xs font-semibold tracking-[0.2em] uppercase animate-on-scroll">Galeri</span>
+                    <h2 class="font-serif text-3xl md:text-4xl tracking-tight mt-3 mb-5 text-gray-900 animate-on-scroll delay-1">Galeri <span class="text-primary">SMKN 14</span></h2>
+                    <p class="text-gray-500 font-light leading-relaxed animate-on-scroll delay-2">Dokumentasi kegiatan dan suasana di SMKN 14 Samarinda.</p>
+                </div>
+
+                <!-- Paskibraka — 1 foto besar -->
+                <div class="mb-8 animate-on-scroll">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-1 h-8 bg-primary rounded-full"></div>
+                        <h3 class="text-xl font-serif font-semibold text-gray-900">Paskibraka</h3>
+                    </div>
+                    <div class="gallery-item relative cursor-pointer" onclick="openLightbox(this)">
+                        <img src="https://z-cdn-media.chatglm.cn/files/8d15b593-de45-409c-9be1-5a616397b346.jpeg?auth_key=1877861924-2ebc9b49a726446181aa7155a60bb99e-0-2e9e73f96972055d0e2517bd8db88ef9"
+                             alt="Paskibraka SMKN 14" class="w-full h-72 md:h-96 lg:h-[480px] object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent flex items-end p-6 md:p-10">
+                            <div>
+                                <span class="inline-block bg-primary/80 backdrop-blur-sm text-white text-[10px] font-semibold tracking-widest uppercase px-3 py-1 rounded-full mb-3">Paskibraka</span>
+                                <h4 class="text-white text-xl md:text-2xl font-semibold">Tim Paskibraka SMKN 14 Samarinda</h4>
+                                <p class="text-white/60 text-sm mt-1">Upacara bendera — barisan dengan penuh disiplin dan kebanggaan</p>
+                            </div>
+                        </div>
+                        <div class="absolute top-5 right-5 bg-white/20 backdrop-blur-md rounded-full p-2.5 hover:bg-white/40 transition-colors">
+                            <span class="iconify text-white" data-icon="lucide:maximize-2" data-width="20"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gedung & Logo -->
+                <div class="flex items-center gap-3 mb-5 animate-on-scroll delay-1">
+                    <div class="w-1 h-8 bg-secondary rounded-full"></div>
+                    <h3 class="text-xl font-serif font-semibold text-gray-900">Sekolah Kami</h3>
+                </div>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="gallery-item relative cursor-pointer animate-on-scroll delay-2" onclick="openLightbox(this)">
+                        <img src="https://z-cdn-media.chatglm.cn/files/338a0835-8196-4dd6-839c-7983bdd992e9.jpeg?auth_key=1877861924-0caf9d28c2384c648b936d50d3e98a02-0-39f82f1a19afe9e8d98363cfc18ffae2"
+                             alt="Gedung SMKN 14" class="w-full h-72 md:h-80 object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex items-end p-6">
+                            <div>
+                                <span class="inline-block bg-secondary/80 backdrop-blur-sm text-white text-[10px] font-semibold tracking-widest uppercase px-3 py-1 rounded-full mb-2">Gedung Sekolah</span>
+                                <h4 class="text-white text-lg font-semibold">Kantor SMKN 14 Samarinda</h4>
+                                <p class="text-white/60 text-sm mt-0.5">Jl. H.A.M.M Rifadin SMKN 14 Samarinda</p>
+                            </div>
+                        </div>
+                        <div class="absolute top-4 right-4 bg-white/20 backdrop-blur-md rounded-full p-2 opacity-0 hover:opacity-100 transition-opacity">
+                            <span class="iconify text-white" data-icon="lucide:maximize-2" data-width="18"></span>
+                        </div>
+                    </div>
+                    <div class="gallery-item relative cursor-pointer animate-on-scroll delay-3" onclick="openLightbox(this)">
+                        <div class="w-full h-72 md:h-80 bg-gradient-to-br from-primary-dark via-secondary to-primary flex items-center justify-center">
+                            <img src="https://z-cdn-media.chatglm.cn/files/76f9f1c0-9ce7-4678-b517-c05365e5e3b0.jpeg?auth_key=1877861924-84ea8cc8c6224f42871147ed231c2e55-0-4a9229e5abbda91aec34c9871133fbb8"
+                                 alt="Logo SMKN 14" class="w-36 h-36 md:w-44 md:h-44 object-contain rounded-full bg-white p-3 shadow-2xl">
+                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex items-end p-6">
+                            <div>
+                                <span class="inline-block bg-accent/80 backdrop-blur-sm text-white text-[10px] font-semibold tracking-widest uppercase px-3 py-1 rounded-full mb-2">Identitas</span>
+                                <h4 class="text-white text-lg font-semibold">Logo Resmi SMKN 14</h4>
+                                <p class="text-white/60 text-sm mt-0.5">Sekolah Menengah Kejuruan Negeri 14 Samarinda</p>
+                            </div>
+                        </div>
+                        <div class="absolute top-4 right-4 bg-white/20 backdrop-blur-md rounded-full p-2 opacity-0 hover:opacity-100 transition-opacity">
+                            <span class="iconify text-white" data-icon="lucide:maximize-2" data-width="18"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MAPS & KONTAK -->
+        <section id="kontak" class="py-20 md:py-28 px-6 bg-gray-50/80">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center max-w-2xl mx-auto mb-16">
+                    <span class="text-primary text-xs font-semibold tracking-[0.2em] uppercase animate-on-scroll">Kontak</span>
+                    <h2 class="font-serif text-3xl md:text-4xl tracking-tight mt-3 mb-5 text-gray-900 animate-on-scroll delay-1">Hubungi <span class="text-primary">Kami</span></h2>
+                    <p class="text-gray-500 font-light leading-relaxed animate-on-scroll delay-2">Jangan ragu untuk menghubungi kami jika ada pertanyaan seputar pendaftaran, program keahlian, atau informasi lainnya.</p>
+                </div>
+                <div class="grid lg:grid-cols-2 gap-8">
+                    <div class="space-y-6">
+                        <div class="rounded-2xl overflow-hidden shadow-lg animate-on-scroll" style="height: 300px;">
+                            <iframe src="https://www.google.com/maps?q=Jl.+H.A.M.M+Rifadin+SMKN+14+Samarinda&output=embed" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                        </div>
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 animate-on-scroll delay-1 hover:shadow-md transition-shadow">
+                                <div class="w-10 h-10 bg-green-50 rounded-xl flex items-center justify-center mb-3"><span class="iconify text-primary" data-icon="lucide:map-pin" data-width="20"></span></div>
+                                <h4 class="text-sm font-semibold text-gray-800 mb-1">Alamat</h4>
+                                <p class="text-xs text-gray-500 leading-relaxed">Jl. H.A.M.M Rifadin SMKN 14 Samarinda</p>
+                            </div>
+                            <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 animate-on-scroll delay-2 hover:shadow-md transition-shadow">
+                                <div class="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center mb-3"><span class="iconify text-secondary" data-icon="lucide:phone" data-width="20"></span></div>
+                                <h4 class="text-sm font-semibold text-gray-800 mb-1">Telepon</h4>
+                                <p class="text-xs text-gray-400 italic">—</p>
+                            </div>
+                            <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 animate-on-scroll delay-3 hover:shadow-md transition-shadow">
+                                <div class="w-10 h-10 bg-green-50 rounded-xl flex items-center justify-center mb-3"><span class="iconify text-green-600" data-icon="lucide:mail" data-width="20"></span></div>
+                                <h4 class="text-sm font-semibold text-gray-800 mb-1">Email</h4>
+                                <p class="text-xs text-gray-500">info@smkn14samarinda.sch.id</p>
+                            </div>
+                            <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 animate-on-scroll delay-4 hover:shadow-md transition-shadow">
+                                <div class="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center mb-3"><span class="iconify text-accent" data-icon="lucide:clock" data-width="20"></span></div>
+                                <h4 class="text-sm font-semibold text-gray-800 mb-1">Jam Operasional</h4>
+                                <p class="text-xs text-gray-500">Senin - Sabtu, 07:00 - 15:00 WITA</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100 animate-on-scroll h-full flex flex-col">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-2 flex items-center gap-2"><span class="iconify text-primary" data-icon="lucide:send" data-width="20"></span>Kirim Pesan</h3>
+                            <p class="text-gray-400 text-sm mb-6">Isi form di bawah ini untuk mengirimkan pesan kepada kami.</p>
+                            <form onsubmit="handleContact(event)" class="space-y-4 flex-1 flex flex-col">
+                                <div>
+                                    <label class="text-xs font-semibold text-gray-600 mb-1.5 block">Nama Lengkap</label>
+                                    <input type="text" placeholder="Masukkan nama lengkap" required class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-green-400 focus:ring-2 focus:ring-green-100 transition-all">
+                                </div>
+                                <div>
+                                    <label class="text-xs font-semibold text-gray-600 mb-1.5 block">Email</label>
+                                    <input type="email" placeholder="contoh@email.com" required class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-green-400 focus:ring-2 focus:ring-green-100 transition-all">
+                                </div>
+                                <div>
+                                    <label class="text-xs font-semibold text-gray-600 mb-1.5 block">Subjek</label>
+                                    <input type="text" placeholder="Topik pesan Anda" required class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-green-400 focus:ring-2 focus:ring-green-100 transition-all">
+                                </div>
+                                <div class="flex-1">
+                                    <label class="text-xs font-semibold text-gray-600 mb-1.5 block">Pesan</label>
+                                    <textarea placeholder="Tulis pesan Anda di sini..." rows="4" required class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-green-400 focus:ring-2 focus:ring-green-100 transition-all resize-none h-full"></textarea>
+                                </div>
+                                <button type="submit" class="w-full btn-primary text-sm py-3.5">
+                                    <span class="flex items-center justify-center gap-2"><span class="iconify" data-icon="lucide:send" data-width="16"></span>Kirim Pesan</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="bg-gray-900 text-white pt-16 pb-8 px-6">
+            <div class="max-w-7xl mx-auto">
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+                    <div class="lg:col-span-1">
+                        <div class="flex items-center gap-3 mb-5">
+                            <img src="https://z-cdn-media.chatglm.cn/files/76f9f1c0-9ce7-4678-b517-c05365e5e3b0.jpeg?auth_key=1877861924-84ea8cc8c6224f42871147ed231c2e55-0-4a9229e5abbda91aec34c9871133fbb8" alt="Logo" class="w-12 h-12 rounded-full object-contain bg-white p-1">
+                            <div><div class="font-bold text-sm">SMKN 14</div><div class="text-gray-400 text-[10px] tracking-widest uppercase">Samarinda</div></div>
+                        </div>
+                        <p class="text-gray-400 text-sm font-light leading-relaxed mb-5">Mencetak generasi unggul, terampil, dan berakhlak mulia melalui pendidikan kejuruan berkualitas.</p>
+                        <div class="flex gap-3">
+                            <a href="#" class="w-9 h-9 bg-white/10 rounded-lg flex items-center justify-center hover:bg-green-500 transition-all hover:-translate-y-1"><span class="iconify" data-icon="lucide:facebook" data-width="16"></span></a>
+                            <a href="#" class="w-9 h-9 bg-white/10 rounded-lg flex items-center justify-center hover:bg-green-500 transition-all hover:-translate-y-1"><span class="iconify" data-icon="lucide:instagram" data-width="16"></span></a>
+                            <a href="#" class="w-9 h-9 bg-white/10 rounded-lg flex items-center justify-center hover:bg-green-500 transition-all hover:-translate-y-1"><span class="iconify" data-icon="lucide:youtube" data-width="16"></span></a>
+                            <a href="#" class="w-9 h-9 bg-white/10 rounded-lg flex items-center justify-center hover:bg-green-500 transition-all hover:-translate-y-1"><span class="iconify" data-icon="lucide:twitter" data-width="16"></span></a>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-sm mb-5 tracking-wide">Navigasi</h4>
+                        <ul class="space-y-3">
+                            <li><a href="#home" class="text-gray-400 text-sm hover:text-green-400 transition-colors flex items-center gap-2"><span class="iconify" data-icon="lucide:chevron-right" data-width="14"></span>Beranda</a></li>
+                            <li><a href="#tentang" class="text-gray-400 text-sm hover:text-green-400 transition-colors flex items-center gap-2"><span class="iconify" data-icon="lucide:chevron-right" data-width="14"></span>Tentang Kami</a></li>
+                            <li><a href="#program" class="text-gray-400 text-sm hover:text-green-400 transition-colors flex items-center gap-2"><span class="iconify" data-icon="lucide:chevron-right" data-width="14"></span>Program Keahlian</a></li>
+                            <li><a href="#galeri" class="text-gray-400 text-sm hover:text-green-400 transition-colors flex items-center gap-2"><span class="iconify" data-icon="lucide:chevron-right" data-width="14"></span>Galeri</a></li>
+                            <li><a href="#kontak" class="text-gray-400 text-sm hover:text-green-400 transition-colors flex items-center gap-2"><span class="iconify" data-icon="lucide:chevron-right" data-width="14"></span>Kontak</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-sm mb-5 tracking-wide">Program Keahlian</h4>
+                        <ul class="space-y-3">
+                            <li><a href="#program" class="text-gray-400 text-sm hover:text-green-400 transition-colors flex items-center gap-2"><span class="iconify" data-icon="lucide:chevron-right" data-width="14"></span>TJKT</a></li>
+                            <li><a href="#program" class="text-gray-400 text-sm hover:text-green-400 transition-colors flex items-center gap-2"><span class="iconify" data-icon="lucide:chevron-right" data-width="14"></span>DKV</a></li>
+                            <li><a href="#program" class="text-gray-400 text-sm hover:text-green-400 transition-colors flex items-center gap-2"><span class="iconify" data-icon="lucide:chevron-right" data-width="14"></span>Tata Busana</a></li>
+                            <li><a href="#program" class="text-gray-400 text-sm hover:text-green-400 transition-colors flex items-center gap-2"><span class="iconify" data-icon="lucide:chevron-right" data-width="14"></span>AKL</a></li>
+                            <li><a href="#program" class="text-gray-400 text-sm hover:text-green-400 transition-colors flex items-center gap-2"><span class="iconify" data-icon="lucide:chevron-right" data-width="14"></span>MPLB</a></li>
+                            <li><a href="#program" class="text-gray-400 text-sm hover:text-green-400 transition-colors flex items-center gap-2"><span class="iconify" data-icon="lucide:chevron-right" data-width="14"></span>Pemasaran</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-sm mb-5 tracking-wide">Kontak</h4>
+                        <ul class="space-y-4">
+                            <li class="flex items-start gap-3"><span class="iconify text-green-400 mt-0.5 flex-shrink-0" data-icon="lucide:map-pin" data-width="16"></span><span class="text-gray-400 text-sm">Jl. H.A.M.M Rifadin SMKN 14 Samarinda</span></li>
+                            <li class="flex items-center gap-3"><span class="iconify text-green-400 flex-shrink-0" data-icon="lucide:phone" data-width="16"></span><span class="text-gray-500 text-sm italic">—</span></li>
+                            <li class="flex items-center gap-3"><span class="iconify text-green-400 flex-shrink-0" data-icon="lucide:mail" data-width="16"></span><span class="text-gray-400 text-sm">info@smkn14samarinda.sch.id</span></li>
+                            <li class="flex items-center gap-3"><span class="iconify text-green-400 flex-shrink-0" data-icon="lucide:clock" data-width="16"></span><span class="text-gray-400 text-sm">Sen-Sab: 07:00 - 15:00</span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <p class="text-gray-500 text-xs">© 2025 SMKN 14 Samarinda. Seluruh hak cipta dilindungi.</p>
+                    <div class="flex items-center gap-6">
+                        <a href="#" class="text-gray-500 text-xs hover:text-green-400 transition-colors">Kebijakan Privasi</a>
+                        <a href="#" class="text-gray-500 text-xs hover:text-green-400 transition-colors">Syarat & Ketentuan</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <!-- Back to Top -->
+        <button onclick="window.scrollTo({top:0})" class="back-to-top fixed bottom-6 right-6 z-40 w-12 h-12 bg-primary text-white rounded-full shadow-xl flex items-center justify-center hover:bg-primary-dark transition-all hover:-translate-y-1" id="backToTop">
+            <span class="iconify" data-icon="lucide:arrow-up" data-width="20"></span>
+        </button>
+    </div>
+
+    <!-- Lightbox -->
+    <div class="lightbox fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4" id="lightbox" onclick="closeLightbox(event)">
+        <button class="absolute top-6 right-6 text-white/70 hover:text-white transition-colors z-10" onclick="closeLightbox(event)"><span class="iconify" data-icon="lucide:x" data-width="32"></span></button>
+        <img src="" alt="" class="max-w-full max-h-[85vh] object-contain rounded-lg" id="lightboxImg">
+    </div>
+
+    <!-- Toast Container -->
+    <div class="fixed top-20 right-6 z-50 space-y-3" id="toastContainer"></div>
+
+    <script>
+        (function(){const c=document.getElementById('loginParticles');for(let i=0;i<30;i++){const p=document.createElement('div');p.className='login-particle';p.style.left=Math.random()*100+'%';p.style.width=p.style.height=(Math.random()*8+4)+'px';p.style.animationDuration=(Math.random()*8+6)+'s';p.style.animationDelay=(Math.random()*5)+'s';p.style.opacity=Math.random()*0.3+0.1;c.appendChild(p);}})();
+
+        function handleLogin(e){e.preventDefault();const u=document.getElementById('loginUser').value;showToast('Login berhasil! Selamat datang, '+u,'success');setTimeout(()=>enterSite(),800);}
+        function skipLogin(){showToast('Masuk sebagai Tamu','info');setTimeout(()=>enterSite(),500);}
+        function showLogin(){document.getElementById('loginOverlay').classList.remove('hidden-overlay');document.getElementById('mainSite').style.opacity='0';document.body.style.overflow='hidden';}
+        function enterSite(){document.getElementById('loginOverlay').classList.add('hidden-overlay');document.getElementById('mainSite').style.opacity='1';document.body.style.overflow='';setTimeout(initScrollAnimations,500);setTimeout(startCounters,800);}
+        function togglePassword(){const i=document.getElementById('loginPass'),o=document.getElementById('eyeIcon');if(i.type==='password'){i.type='text';o.setAttribute('data-icon','lucide:eye-off');}else{i.type='password';o.setAttribute('data-icon','lucide:eye');}}
+
+        function showToast(m,t='info'){const c=document.getElementById('toastContainer'),e=document.createElement('div');const cl={success:'bg-green-500',error:'bg-red-500',info:'bg-blue-500',warning:'bg-amber-500'};const ic={success:'lucide:check-circle',error:'lucide:x-circle',info:'lucide:info',warning:'lucide:alert-triangle'};e.className=`toast ${cl[t]} text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 min-w-[280px]`;e.innerHTML=`<span class="iconify flex-shrink-0" data-icon="${ic[t]}" data-width="20"></span><span class="text-sm font-medium">${m}</span>`;c.appendChild(e);setTimeout(()=>{e.classList.add('hiding');setTimeout(()=>e.remove(),300);},3000);}
+
+        function handleContact(e){e.preventDefault();showToast('Pesan berhasil dikirim! Kami akan segera merespon.','success');e.target.reset();}
+
+        function toggleMobile(){const m=document.getElementById('mobileMenu'),i=document.getElementById('menuIcon');m.classList.toggle('open');if(m.classList.contains('open')){i.setAttribute('data-icon','lucide:x');document.body.style.overflow='hidden';}else{i.setAttribute('data-icon','lucide:menu');document.body.style.overflow='';}}
+        function closeMobile(){document.getElementById('mobileMenu').classList.remove('open');document.getElementById('menuIcon').setAttribute('data-icon','lucide:menu');document.body.style.overflow='';}
+
+        window.addEventListener('scroll',()=>{document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>50);document.getElementById('backToTop').classList.toggle('visible',window.scrollY>600);['home','tentang','program','galeri','kontak'].forEach(id=>{const s=document.getElementById(id);if(s){const r=s.getBoundingClientRect(),l=document.querySelector(`.nav-link[href="#${id}"]`);if(l&&r.top<=100&&r.bottom>100){document.querySelectorAll('.nav-link').forEach(x=>x.classList.remove('active'));l.classList.add('active');}}});});
+
+        function initScrollAnimations(){const o=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible');}),{threshold:0.1,rootMargin:'0px 0px -50px 0px'});document.querySelectorAll('.animate-on-scroll').forEach(el=>o.observe(el));}
+        function startCounters(){const o=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting&&!x.target.dataset.counted){x.target.dataset.counted='true';const t=parseInt(x.target.dataset.target);let c=0;const inc=t/60;const timer=setInterval(()=>{c+=inc;if(c>=t){c=t;clearInterval(timer);}x.target.textContent=Math.floor(c).toLocaleString('id-ID')+'+';},25);}}),{threshold:0.5});document.querySelectorAll('.counter').forEach(c=>o.observe(c));}
+
+        function openLightbox(el){const img=el.querySelector('img');if(img){document.getElementById('lightboxImg').src=img.src;document.getElementById('lightbox').classList.add('active');document.body.style.overflow='hidden';}}
+        function closeLightbox(e){if(e.target===document.getElementById('lightbox')||e.currentTarget.tagName==='BUTTON'){document.getElementById('lightbox').classList.remove('active');document.body.style.overflow='';}}
+        document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.getElementById('lightbox').classList.remove('active');document.body.style.overflow='';}});
+
+        document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',e=>{const t=document.querySelector(a.getAttribute('href'));if(t){e.preventDefault();window.scrollTo({top:t.getBoundingClientRect().top+window.scrollY-80,behavior:'smooth'});}});});
+
+        document.body.style.overflow='hidden';
+    </script>
+</body>
+</html>
